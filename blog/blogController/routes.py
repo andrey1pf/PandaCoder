@@ -1,3 +1,5 @@
+import base64
+
 import flask
 from flask import render_template, request, redirect, url_for, flash, Flask, request, url_for
 from flask_login import login_user, login_required, logout_user
@@ -7,6 +9,9 @@ from urllib.parse import urlparse, urljoin
 
 from blogController import app, db
 from blogController.models import Article, User
+from blogController import add_image
+import io
+from PIL import Image
 from blogController.parsing import parsing_news_BBC
 
 
@@ -30,7 +35,16 @@ def posts():
 @app.route('/posts/<int:id>', methods=['GET'])
 def posts_detail(id):
     article = Article.query.get(id)
-    return render_template("posts_detail.html", article=article)
+    # Чтение Blob в память
+    blob_reader = io.BytesIO(article.ImageID)
+
+    # Кодирование содержимого файла в формат Base64
+    base64_content = base64.b64encode(blob_reader.read()).decode('utf-8')
+
+    # Создание строки формата data:image/jpeg;base64,{base64_content}
+    img_src = f"data:image/jpeg;base64,{base64_content}"
+
+    return render_template("posts_detail.html", article=article, image_data=img_src)
 
 
 @app.route('/posts/<int:id>/delete', methods=['GET'])
@@ -71,8 +85,13 @@ def create_article():
         title = request.form['title']
         intro = request.form['intro']
         text = request.form['text']
+        image = request.files['image']
 
-        article = Article(title=title, intro=intro, text=text)
+        image.save(f'{title[:10]}.jpg')
+
+        image_blob = add_image.convert_to_binary_data(f'{title[:10]}.jpg')
+
+        article = Article(title=title, intro=intro, text=text, ImageID=image_blob)
 
         try:
             db.session.add(article)
