@@ -8,16 +8,13 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from elasticsearch import Elasticsearch
 
-POOL_TIME = 1800  # Seconds
+POOL_TIME = 5
 
-# variables that are accessible from anywhere
 commonDataStruct = {}
-# lock to control access to variable
 dataLock = threading.Lock()
-# thread handler
 yourThread = threading.Thread()
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates", static_folder="static")
 secret_key = secrets.token_urlsafe(32)
 app.config.update(
     DEBUG=True,
@@ -34,6 +31,7 @@ manager = LoginManager(app)
 
 from blogController import models, routes, parsing
 
+
 def create_app():
 
     def interrupt():
@@ -45,21 +43,15 @@ def create_app():
         global yourThread
         with dataLock:
             parsing.parsing_news_BBC()
-
-        # Set the next thread to happen
         yourThread = threading.Timer(POOL_TIME, doStuff, ())
         yourThread.start()
 
     def doStuffStart():
-        # Do initialisation stuff here
         global yourThread
-        # Create your thread
         yourThread = threading.Timer(POOL_TIME, doStuff, ())
         yourThread.start()
 
-    # Initiate
     doStuffStart()
-    # When you kill Flask (SIGTERM), clear the trigger for the next thread
     atexit.register(interrupt)
     return app
 

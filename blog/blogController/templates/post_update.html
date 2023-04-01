@@ -9,8 +9,8 @@ Article update
     <h1>Article update</h1>
     <form method="post">
         <input type = "text" name="title" id="title" class="form-control" value="{{ article.title }}" placeholder="Enter the title"><br>
-        <textarea name="intro" id = "intro" class="form-control" placeholder="Enter announcement">{{ article.intro }}</textarea><br>
-        <textarea name="text" id = "text" class="form-control" placeholder="Enter body text">{{ article.text }}</textarea><br>
+        <textarea name="intro" id = "intro" class="form-control" placeholder="Enter announcement" rows="3">{{ article.intro }}</textarea><br>
+        <textarea name="text" id = "text" class="form-control" placeholder="Enter body text" rows="7">{{ article.text }}</textarea><br>
         <input type="submit" class="btn btn-success" value="Update">
     </form>
 </div>

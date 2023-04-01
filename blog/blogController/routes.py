@@ -61,7 +61,7 @@ def post_update(id):
         except:
             return "An error occurred while edit the article."
     else:
-        return render_template('/post_update.html', article=article)
+        return render_template('post_update.html', article=article)
 
 
 @app.route('/create-article', methods=['POST', 'GET'])
@@ -81,7 +81,7 @@ def create_article():
         except:
             return "An error occurred while adding the article."
     else:
-        return render_template('/create-article.html')
+        return render_template('create-article.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -126,7 +126,7 @@ def login_page():
                 flash('Login or password is not correct')
         else:
             flash('Please fill login and password fields')
-    return render_template('/login.html')
+    return render_template('login.html')
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -134,6 +134,12 @@ def login_page():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    articles = Article.query.order_by(Article.date.desc()).all()
+    return render_template("search.html", articles=articles)
 
 
 @app.after_request
