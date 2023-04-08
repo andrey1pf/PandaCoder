@@ -15,9 +15,10 @@ Article creation page
         <input type = "text" name="title" id="title" class="form-control" placeholder="Enter the title"><br>
         <textarea name="intro" id = "intro" class="form-control" placeholder="Enter announcement" rows="3"></textarea><br>
         <textarea name="text" id = "text" class="form-control" placeholder="Enter body text" rows="7"></textarea><br>
-        <label for="image">Select picture:</label>
-        <input type="file" id="image" name="image">
-        <input type="submit" class="btn btn-success" value="Send">
+        <div class="container" id="container-image">
+            <input type="file" id="image" name="image">
+        </div>
+        <input type="submit" class="btn btn-success" id="send" value="Publish News">
     </form>
 </div>
 {% endblock %}

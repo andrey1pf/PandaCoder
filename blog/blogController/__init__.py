@@ -29,12 +29,13 @@ db = SQLAlchemy(app)
 db.create_all()
 manager = LoginManager(app)
 
-from blogController import models, routes, parsing
+from blogController import models, routes
+from blogController.Parsers import parser_api
 
 
 def create_app():
 
-    def interrupt():
+    '''def interrupt():
         global yourThread
         yourThread.cancel()
 
@@ -52,7 +53,7 @@ def create_app():
         yourThread.start()
 
     doStuffStart()
-    atexit.register(interrupt)
+    atexit.register(interrupt)'''
     return app
 
 

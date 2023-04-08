@@ -27,3 +27,13 @@ button[type="submit"] {
 button[type="submit"]:hover {
   background-color: #3E8E41;
 }
+
+#send{
+  margin-top: 1rem;
+}
+
+#container-image{
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}

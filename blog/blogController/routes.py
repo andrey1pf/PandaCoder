@@ -1,24 +1,66 @@
 import base64
+import os
+import requests
 
-import flask
-from flask import render_template, request, redirect, url_for, flash, Flask, request, url_for
+from flask import render_template, flash, url_for
 from flask_login import login_user, login_required, logout_user
+from sqlalchemy import create_engine
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask import request, g, redirect
+from flask import request, redirect
 from urllib.parse import urlparse, urljoin
+from sqlalchemy.orm import sessionmaker
 
 from blogController import app, db
 from blogController.models import Article, User
 from blogController import add_image
+from blogController.ChatGPT import gpt
+from blogController.Parsers import parser_api
 import io
-from PIL import Image
-from blogController.parsing import parsing_news_BBC
+
+
+@app.route('/pars')
+def add_pars():
+    list_articles = parser_api.do_pars()
+
+    for art in list_articles:
+        title = art[0]
+        intro = art[1]
+        text = art[2]
+        url = art[4]
+        index = text.find("… [")
+        if index != -1:
+            text = text[:index]
+            text += gpt.continue_text(text)
+        image_url = art[3]
+        response = requests.get(image_url)
+        if response.status_code == 200:
+            with open(f'{title[:10]}.jpg', 'wb') as f:
+                f.write(response.content)
+
+        image_blob = add_image.convert_to_binary_data(f'{art[0][:10]}.jpg')
+
+        article = Article(title=title, intro=intro, text=text, ImageID=image_blob)
+
+        if not db.session.query(Article).filter_by(title=article.title).first():
+            try:
+                db.session.add(article)
+                db.session.commit()
+                os.remove(f'{title[:10]}.jpg')
+            except:
+                return "An error occurred while adding the article."
+    return render_template("pars.html")
 
 
 @app.route('/', methods=['GET'])
 def index():
     articles = Article.query.order_by(Article.date.desc()).all()
-    return render_template("index.html", articles=articles)
+    imgs_src = []
+    for article in articles:
+        blob_reader = io.BytesIO(article.ImageID)
+        base64_content = base64.b64encode(blob_reader.read()).decode('utf-8')
+        img_src = f"data:image/jpeg;base64,{base64_content}"
+        imgs_src.append(img_src)
+    return render_template("index.html", articles=articles, image_data=imgs_src)
 
 
 @app.route('/about', methods=['GET'])
@@ -35,13 +77,8 @@ def posts():
 @app.route('/posts/<int:id>', methods=['GET'])
 def posts_detail(id):
     article = Article.query.get(id)
-    # Чтение Blob в память
     blob_reader = io.BytesIO(article.ImageID)
-
-    # Кодирование содержимого файла в формат Base64
     base64_content = base64.b64encode(blob_reader.read()).decode('utf-8')
-
-    # Создание строки формата data:image/jpeg;base64,{base64_content}
     img_src = f"data:image/jpeg;base64,{base64_content}"
 
     return render_template("posts_detail.html", article=article, image_data=img_src)
@@ -96,6 +133,7 @@ def create_article():
         try:
             db.session.add(article)
             db.session.commit()
+            os.remove(f'{title[:10]}.jpg')
             return redirect('/posts')
         except:
             return "An error occurred while adding the article."
