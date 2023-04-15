@@ -4,51 +4,16 @@ import requests
 
 from flask import render_template, flash, url_for
 from flask_login import login_user, login_required, logout_user
-from sqlalchemy import create_engine
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask import request, redirect
 from urllib.parse import urlparse, urljoin
-from sqlalchemy.orm import sessionmaker
 
 from blogController import app, db
 from blogController.models import Article, User
-from blogController import add_image
-from blogController.ChatGPT import gpt
-from blogController.Parsers import parser_api
+from blogController import add_image, search_article
 import io
-
-
-@app.route('/pars')
-def add_pars():
-    list_articles = parser_api.do_pars()
-
-    for art in list_articles:
-        title = art[0]
-        intro = art[1]
-        text = art[2]
-        url = art[4]
-        index = text.find("… [")
-        if index != -1:
-            text = text[:index]
-            text += gpt.continue_text(text)
-        image_url = art[3]
-        response = requests.get(image_url)
-        if response.status_code == 200:
-            with open(f'{title[:10]}.jpg', 'wb') as f:
-                f.write(response.content)
-
-        image_blob = add_image.convert_to_binary_data(f'{art[0][:10]}.jpg')
-
-        article = Article(title=title, intro=intro, text=text, ImageID=image_blob)
-
-        if not db.session.query(Article).filter_by(title=article.title).first():
-            try:
-                db.session.add(article)
-                db.session.commit()
-                os.remove(f'{title[:10]}.jpg')
-            except:
-                return "An error occurred while adding the article."
-    return render_template("pars.html")
+import threading
+import time
 
 
 @app.route('/', methods=['GET'])
@@ -60,7 +25,7 @@ def index():
         base64_content = base64.b64encode(blob_reader.read()).decode('utf-8')
         img_src = f"data:image/jpeg;base64,{base64_content}"
         imgs_src.append(img_src)
-    return render_template("index.html", articles=articles, image_data=imgs_src)
+    return render_template("index.html", articles=articles[:9], image_data=imgs_src[:9])
 
 
 @app.route('/about', methods=['GET'])
@@ -195,8 +160,22 @@ def logout():
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
-    articles = Article.query.order_by(Article.date.desc()).all()
-    return render_template("search.html", articles=articles)
+    if request.method == 'GET':
+        article = Article.query.order_by(Article.id.desc()).first()
+        blob_reader = io.BytesIO(article.ImageID)
+        base64_content = base64.b64encode(blob_reader.read()).decode('utf-8')
+        img_src = f"data:image/jpeg;base64,{base64_content}"
+        return render_template("search_article.html", article=article, image_data=img_src)
+
+    if request.method == 'POST':
+        query = request.form['find_article']
+        id_article = search_article.search_article(query)
+        article = Article.query.get(id_article)
+        blob_reader = io.BytesIO(article.ImageID)
+        base64_content = base64.b64encode(blob_reader.read()).decode('utf-8')
+        img_src = f"data:image/jpeg;base64,{base64_content}"
+
+        return render_template("search_article.html", article=article, image_data=img_src)
 
 
 @app.after_request
@@ -211,13 +190,12 @@ def is_safe_redirect_url(target):
     host_url = urlparse(request.host_url)
     redirect_url = urlparse(urljoin(request.host_url, target))
     return (
-        redirect_url.scheme in ("http", "https")
-        and host_url.netloc == redirect_url.netloc
+            redirect_url.scheme in ("http", "https")
+            and host_url.netloc == redirect_url.netloc
     )
 
 
 def get_safe_redirect(url):
-
     if url and is_safe_redirect_url(url):
         return url
 

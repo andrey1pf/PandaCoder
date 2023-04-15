@@ -5,25 +5,25 @@
 {% endblock %}
 
 {% block title %}
-All posts
+    All posts
 {% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <h1>All posts</h1>
+    <div class="container mt-5">
+        <h1>All posts</h1>
 
-    {% if articles|length > 0 %}
+        {% if articles|length > 0 %}
 
-    {% for el in articles %}
-        <div class="news-post">
-            <h2 class="post-title">{{ el.title|safe }}</h2>
-            <p class="post-description">{{ el.intro }}</p>
-            <p class="post-date"><b>Date: {{ el.date.date() }}</b></p>
-            <a href="/posts/{{ el.id }}" class="read-more-btn">Open</a>
-        </div>
-    {% endfor %}
-    {% else %}
-        <p>We don't have articles on the site yet.</p>
-    {% endif %}
-</div>
+            {% for el in articles %}
+                <div class="news-post">
+                    <h2 class="post-title">{{ el.title|safe }}</h2>
+                    <p class="post-description">{{ el.intro }}</p>
+                    <p class="post-date"><b>Date: {{ el.date.date() }}</b></p>
+                    <a href="/posts/{{ el.id }}" class="read-more-btn">Open</a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>We don't have articles on the site yet.</p>
+        {% endif %}
+    </div>
 {% endblock %}

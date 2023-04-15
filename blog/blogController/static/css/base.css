@@ -1,26 +1,28 @@
-    h5{
-        margin-top: 6px;
-    }
-    #menu-button {
-	    position: relative;
-	    color: #484848;
-	    font-size: 1.25rem;
-	    text-decoration: none;
-    }
+h5 {
+    margin-top: 6px;
+}
 
-    #menu-button::before {
-        content: '';
-        position: absolute;
-        left: 0; bottom: 3px;
-        width: 0;
-        height: 1.5px;
-        background-color: black;
-    }
+#menu-button {
+    position: relative;
+    color: #484848;
+    font-size: 1.25rem;
+    text-decoration: none;
+}
 
-    #menu-button:hover:before {
-        width: 100%;
-    }
+#menu-button::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 3px;
+    width: 0;
+    height: 1.5px;
+    background-color: black;
+}
 
-    #menu-button::before {
-        transition: width 0.35s;
-    }
+#menu-button:hover:before {
+    width: 100%;
+}
+
+#menu-button::before {
+    transition: width 0.35s;
+}

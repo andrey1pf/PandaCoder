@@ -5,20 +5,20 @@
 {% endblock %}
 
 {% block title %}
-Article creation page
+    Article creation page
 {% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <h1>Adding an article</h1>
-    <form method="post" enctype="multipart/form-data">
-        <input type = "text" name="title" id="title" class="form-control" placeholder="Enter the title"><br>
-        <textarea name="intro" id = "intro" class="form-control" placeholder="Enter announcement" rows="3"></textarea><br>
-        <textarea name="text" id = "text" class="form-control" placeholder="Enter body text" rows="7"></textarea><br>
-        <div class="container" id="container-image">
-            <input type="file" id="image" name="image">
-        </div>
-        <input type="submit" class="btn btn-success" id="send" value="Publish News">
-    </form>
-</div>
+    <div class="container mt-5">
+        <h1>Adding an article</h1>
+        <form method="post" enctype="multipart/form-data">
+            <input type="text" name="title" id="title" class="form-control" placeholder="Enter the title"><br>
+            <textarea name="intro" id="intro" class="form-control" placeholder="Enter announcement" rows="3"></textarea><br>
+            <textarea name="text" id="text" class="form-control" placeholder="Enter body text" rows="7"></textarea><br>
+            <div class="container" id="container-image">
+                <input type="file" id="image" name="image">
+            </div>
+            <input type="submit" class="btn btn-success" id="send" value="Publish News">
+        </form>
+    </div>
 {% endblock %}

@@ -10,13 +10,13 @@
 <body>
 
 {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
+    {% if messages %}
+        <ul class=flashes>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endwith %}
 
 <form method="post">
@@ -29,7 +29,7 @@
             <td>Password</td>
             <td><input type="password" name="password"></td>
         </tr>
-                <tr>
+        <tr>
             <td>Password retype</td>
             <td><input type="password" name="password2"></td>
         </tr>

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="../static/css/search.css">
+{% endblock %}
+
+{% block title %}
+    Search article
+{% endblock %}
+
+{% block body %}
+    <div class="post-container">
+        <form id="uploadForm" method="post" action="/search">
+            <input type="text" name="find_article" id="find_article" placeholder="Enter a search term">
+            <button type="submit" id="start_search">Search</button>
+        </form>
+
+        <h1 class="post-title">{{ article.title }}</h1>
+        <div class="post-image">
+            <img src="{{ image_data }}" alt="posts image">
+        </div>
+        <div class="post-content">
+            <p class="post-date">{{ article.date.date() }}</p>
+            <p class="post-text" id="post-text">{{ article.text|safe }}</p>
+        </div>
+    </div>
+
+    <script src="../static/js/post_detail.js"></script>
+
+{% endblock %}

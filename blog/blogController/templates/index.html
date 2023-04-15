@@ -6,55 +6,49 @@
 {% endblock %}
 
 {% block title %}
-Main page
+    Main page
 {% endblock %}
 
 {% block body %}
 
     {% if articles|length > 0 %}
 
-    <div class="album py-5 bg-light">
-    <div class="container">
-         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-              {% for i in range(articles|length) %}
-                  <div class="col">
-                      <div class="card shadow-sm">
-                          <!--<svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                              <title>Placeholder</title>
-                              <image height="100%" width="100%" xlink:href="path/to/image.png"`></image>
-                              <img src="{{ image_data }}" alt="posts image">
-                              <rect width="100%" height="100%" fill="#55595c"></rect>
-                              <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
-                          </svg>-->
-                          <div class="image-container">
-                              <img src="{{ image_data[i] }}" id="image-post" alt="posts image">
-                          </div>
+        <div class="album py-5 bg-light">
+            <div class="container">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                    {% set count_articles = 0 %}
+                    {% for i in range(articles|length) %}
+                        <div class="col">
+                            <div class="card shadow-sm">
+                                <div class="image-container">
+                                    <img src="{{ image_data[i] }}" id="image-post" alt="posts image">
+                                </div>
 
-                          <div class="card-body">
-                              {% if articles[i].title|length > 46 %}
-                                    <h3 class="card-text">{{ articles[i].title[:46] + "..." }}</h3>
-                                  {% else %}
-                                  <h3 class="card-text">{{ articles[i].title }}</h3>
-                              {% endif %}
-                              {% if  articles[i].intro|length > 92 %}
-                                  <p class="card-text">{{ articles[i].intro[:81] + "..." }}</p>
-                                  {% else %}
-                                  <p class="card-text">{{ articles[i].intro}}</p>
-                              {% endif %}
-                              <div class="d-flex justify-content-between align-items-center">
-                                  <div class="btn-group">
-                                      <a href="/posts/{{ articles[i].id }}" class="btn btn-warning">Open</a>
-                                      <!-- вставить кнопку лайков и рядом отображение их количества -->
-                                  </div>
-                                  <small class="text-muted">{{ articles[i].date.date() }}</small>
-                              </div>
+                                <div class="card-body">
+                                    {% if articles[i].title|length > 46 %}
+                                        <h3 class="card-text">{{ articles[i].title[:46] + "..." }}</h3>
+                                    {% else %}
+                                        <h3 class="card-text">{{ articles[i].title }}</h3>
+                                    {% endif %}
+                                    {% if  articles[i].intro|length > 92 %}
+                                        <p class="card-text">{{ articles[i].intro[:81] + "..." }}</p>
+                                    {% else %}
+                                        <p class="card-text">{{ articles[i].intro }}</p>
+                                    {% endif %}
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="btn-group">
+                                            <a href="/posts/{{ articles[i].id }}" class="btn btn-warning">Open</a>
+                                            <!-- вставить количество просмотров и рядом отображение их количества -->
+                                        </div>
+                                        <small class="text-muted">{{ articles[i].date.date() }}</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    {% endfor %}
                 </div>
-              {% endfor %}
-          </div>
-    </div>
-    </div>
+            </div>
+        </div>
     {% else %}
         <p>We don't have articles on the site yet.</p>
     {% endif %}

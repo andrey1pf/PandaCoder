@@ -3,10 +3,11 @@ import secrets
 import threading
 import atexit
 
-from flask import Flask
+from flask import Flask, current_app
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from elasticsearch import Elasticsearch
+from werkzeug.local import LocalProxy
 
 POOL_TIME = 5
 
@@ -30,11 +31,9 @@ db.create_all()
 manager = LoginManager(app)
 
 from blogController import models, routes
-from blogController.Parsers import parser_api
 
 
 def create_app():
-
     '''def interrupt():
         global yourThread
         yourThread.cancel()
