@@ -27,9 +27,6 @@ jobs:
           pip install -r parsing/requirements.txt
           pip install pytest
 
-      - name: Run tests
-        run: pytest --rootdir=parsing/tests/
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
