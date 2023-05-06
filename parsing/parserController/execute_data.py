@@ -1,10 +1,17 @@
-import sqlite3
+import mysql.connector
 from datetime import datetime
 
 
 def execute_data(article_title, article_intro, article_text, article_image):
-    conn = sqlite3.connect('../blog/blogController/blog.db')
-    cursor = conn.cursor()
+    mydb = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="blog"
+    )
+    print(3)
+
+    cursor = mydb.cursor()
 
     now = datetime.now()
     title = article_title
@@ -15,16 +22,10 @@ def execute_data(article_title, article_intro, article_text, article_image):
 
     print("start insert")
     print(article_title)
-    cursor.execute("SELECT * FROM article WHERE title = ?", (article_title,))
-    row = cursor.fetchone()
 
-    if row:
-        print("Attention: this article is not unique")
-    else:
-        cursor.execute("INSERT INTO article (title, intro, text, date, ImageID) "
-                       "VALUES (?, ?, ?, ?, ?)",
-                       (title, intro, text, date_article, image))
-        print("end insert")
+    sql = "INSERT IGNORE INTO article (title, intro, text, date, ImageID) VALUES (%s, %s, %s, %s, %s)"
+    val = (title, intro, text, date_article, image)
 
-    conn.commit()
-    conn.close()
+    print("end insert")
+    cursor.execute(sql, val)
+    mydb.commit()

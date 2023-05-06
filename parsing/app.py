@@ -4,7 +4,7 @@ import requests
 
 from parserController import app, execute_data
 from parserController import add_image
-from parserController.Parsers import parser_api
+from parserController.Parsers import parser_newsdataio
 import threading
 import time
 
@@ -16,7 +16,7 @@ def parsing_news():
 
 
 def add_pars():
-    list_articles = parser_api.do_pars()
+    list_articles = parser_newsdataio.start_pars_news('', 'us', 'en', 'top')
 
     for art in list_articles:
         title = art[0]
@@ -24,6 +24,7 @@ def add_pars():
         text = art[2]
         image_url = art[3]
         response = "https://error"
+        print(title)
 
         try:
             response = requests.get(image_url)

@@ -12,7 +12,6 @@
 {% block body %}
 
     {% if articles|length > 0 %}
-
         <div class="album py-5 bg-light">
             <div class="container">
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
@@ -25,15 +24,24 @@
                                 </div>
 
                                 <div class="card-body">
-                                    {% if articles[i].title|length > 46 %}
-                                        <h3 class="card-text">{{ articles[i].title[:46] + "..." }}</h3>
-                                    {% else %}
+                                    {% if articles[i].title|length < 28 %}
                                         <h3 class="card-text">{{ articles[i].title }}</h3>
-                                    {% endif %}
-                                    {% if  articles[i].intro|length > 92 %}
-                                        <p class="card-text">{{ articles[i].intro[:81] + "..." }}</p>
+                                        <p class="card-text">{{ articles[i].intro[:121] + "..." }}</p>
                                     {% else %}
-                                        <p class="card-text">{{ articles[i].intro }}</p>
+                                        {% if articles[i].title|length > 48 %}
+                                            <h3 class="card-text">{{ articles[i].title[:48] + "..." }}</h3>
+                                        {% else %}
+                                            <h3 class="card-text">{{ articles[i].title }}</h3>
+                                        {% endif %}
+                                        {% if  articles[i].intro|length > 92 %}
+                                            <p class="card-text">{{ articles[i].intro[:81] + "..." }}</p>
+                                        {% endif %}
+                                        {% if articles[i].intro|length < 53 %}
+                                            <p class="card-text">{{ articles[i].intro }} <br><br>  </p>
+                                        {% endif %}
+                                        {% if articles[i].intro|length >= 53 and articles[i].intro|length <= 92 %}
+                                            <p class="card-text">{{ articles[i].intro }}
+                                        {% endif %}
                                     {% endif %}
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="btn-group">

@@ -12,5 +12,5 @@ app.config.update(
     ELASTICSEARCH_URL=os.environ.get('ELASTICSEARCH_URL')
 )
 
-from parserController.Parsers import parser_api
+from parserController.Parsers import parser_newsdataio
 from parserController import add_image
