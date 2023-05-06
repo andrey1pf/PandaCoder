@@ -28,7 +28,7 @@ jobs:
           pip install pytest
 
       - name: Run tests
-        run: pytest --rootdir=/parsing/tests/
+        run: pytest --rootdir=parsing/tests/
 
   deploy:
     needs: build
