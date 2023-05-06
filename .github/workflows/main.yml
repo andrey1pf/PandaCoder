@@ -24,10 +24,11 @@ jobs:
       - name: Install dependencies
         run: | 
           pip install -r blog/requirements.txt
+          pip install -r parsing/requirements.txt
           pip install pytest
 
       - name: Run tests
-        run: pytest
+        run: pytest --rootdir=/parsing/tests/
 
   deploy:
     needs: build
