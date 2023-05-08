@@ -1,0 +1,19 @@
+FROM python:3.9-slim-buster
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends build-essential \
+    && apt-get install -y --no-install-recommends gcc \
+    && apt-get install -y --no-install-recommends python3-dev \
+    && apt-get install -y --no-install-recommends default-libmysqlclient-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY ../parsing/requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY ../parsing .
+
+EXPOSE 5001
+
+CMD ["python", "app.py"]
