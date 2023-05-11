@@ -24,35 +24,16 @@ app.config.update(
 )
 app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
     if app.config['ELASTICSEARCH_URL'] else None
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:<password>@localhost:3306/blog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:pi31415926@localhost:3306/blog'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-db.create_all()
+
 manager = LoginManager(app)
 
 from blogController import models, routes
 
 
 def create_app():
-    '''def interrupt():
-        global yourThread
-        yourThread.cancel()
-
-    def doStuff():
-        global commonDataStruct
-        global yourThread
-        with dataLock:
-            parsing.parsing_news_BBC()
-        yourThread = threading.Timer(POOL_TIME, doStuff, ())
-        yourThread.start()
-
-    def doStuffStart():
-        global yourThread
-        yourThread = threading.Timer(POOL_TIME, doStuff, ())
-        yourThread.start()
-
-    doStuffStart()
-    atexit.register(interrupt)'''
     return app
 
 
