@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-pv-claim
+  name: {{ .Values.database.pvcName }}
 spec:
   accessModes:
     - ReadWriteOnce
@@ -12,51 +12,60 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  labels:
-    k8s-app: mysql-db
-    kubernetes.io/cluster-service: "true"
-    kubernetes.io/name: CoreDNS
-  name: mysql-db
-  namespace: yc-blog-namespace
+  name: {{ .Values.database.serviceName }}
 spec:
-  clusterIP: 10.96.128.11
   selector:
-    app: mysql-blog
+    app: {{ .Values.database.appname }}
   ports:
-    - name: mysql
-      port: 3306
-      targetPort: 3306
-  type: ClusterIP
+    - protocol: TCP
+      port: {{ .Values.ports.mysqlPort }}
+      targetPort: {{ .Values.ports.mysqlPort }}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mysql-deployment
+  name: {{ .Values.database.dbname }}
 spec:
   selector:
     matchLabels:
-      app: mysql-blog
+      app: {{ .Values.database.appname }}
   replicas: 1
-  serviceName: mysql
+  serviceName: {{ .Values.database.container.name }}
   template:
     metadata:
       labels:
-        app: mysql-blog
+        app: {{ .Values.database.appname }}
     spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - {{ .Values.backendFrontend.webname }}
+              topologyKey: kubernetes.io/hostname
       containers:
-        - name: mysql
-          image: andrey1pf/panda-coder-sql:dev
+        - name: {{ .Values.database.container.name }}
+          image: {{ .Values.database.container.image }}
+          imagePullPolicy: {{ .Values.database.container.imagePullPolicy }}
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: pi31415926
+              valueFrom:
+                secretKeyRef:
+                  name: db-password-secret
+                  key: password
+          args:
+            - {{ .Values.database.container.args }}
           ports:
-            - containerPort: 3306
+            - containerPort: {{ .Values.ports.mysqlPort }}
           volumeMounts:
-            - name: mysql-persistent-storage
+            - name: {{ .Values.database.container.volumeName }}
               mountPath: /var/lib/mysql
       imagePullSecrets:
         - name: regcred
       volumes:
-        - name: mysql-persistent-storage
+        - name: {{ .Values.database.container.volumeName }}
           persistentVolumeClaim:
-            claimName: mysql-pv-claim
+            claimName: {{ .Values.database.pvcName }}

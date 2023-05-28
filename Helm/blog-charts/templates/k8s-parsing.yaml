@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.parsing.parsname }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.parsing.parsname }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.parsing.parsname }}
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/role: "devweb-app"
+        vault.hashicorp.com/agent-inject-secret-credentials.txt: "secret/data/devwebapp/config"
+    spec:
+      serviceAccountName: internal-app
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - {{ .Values.backendFrontend.webname }}
+                topologyKey: kubernetes.io/hostname
+      containers:
+        - name: {{ .Values.parsing.container.name }}
+          image: {{ .Values.parsing.container.image }}
+          imagePullPolicy: {{ .Values.parsing.container.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.ports.pythonPort }}
+          env:
+            - name: MYSQL_HOST
+              value: mysql-service

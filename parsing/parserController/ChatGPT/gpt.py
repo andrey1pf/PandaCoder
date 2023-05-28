@@ -1,9 +1,10 @@
 import openai
+from parserController import pars_cred
+
+openai.api_key = pars_cred.get_gpt()
 
 
 def continue_text(text, title, intro):
-    openai.api_key = ""
-
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -16,8 +17,6 @@ def continue_text(text, title, intro):
 
 
 def research(text):
-    openai.api_key = ""
-
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -30,8 +29,6 @@ def research(text):
 
 
 def refactor_text(text):
-    openai.api_key = ""
-
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[

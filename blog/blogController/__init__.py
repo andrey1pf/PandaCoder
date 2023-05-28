@@ -8,6 +8,7 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from elasticsearch import Elasticsearch
 from werkzeug.local import LocalProxy
+from blogController import pars_cred
 
 POOL_TIME = 5
 
@@ -24,7 +25,11 @@ app.config.update(
 )
 app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
     if app.config['ELASTICSEARCH_URL'] else None
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:pi31415926@localhost:3306/blog'
+
+cred = pars_cred.init_cred()
+
+host = os.environ.get('MYSQL_HOST')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{cred[0]}:{cred[1]}@{host}:3306/blog'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 

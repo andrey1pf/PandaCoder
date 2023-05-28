@@ -11,9 +11,10 @@ WORKDIR /app
 
 COPY ../parsing/requirements.txt .
 RUN pip install -r requirements.txt
+RUN pip install cryptography
 
 COPY ../parsing .
 
-EXPOSE 5001
+EXPOSE 5000
 
-CMD ["python", "app.py"]
+CMD [ "python", "app.py" ]

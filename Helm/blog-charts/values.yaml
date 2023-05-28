@@ -1,0 +1,40 @@
+backendFrontend:
+  webname: backend-frontend-blog
+  serviceName: service-ingress-backend
+  container:
+    name: panda-coder-blog
+    image: andrey1pf/panda-coder-blog:dev
+    imagePullPolicy: Always
+
+database:
+  dbname: mysql-deployment
+  appname: mysql-blog
+  serviceName: mysql-service
+  pvcName: mysql-pv-claim
+  container:
+    name: mysql
+    image: andrey1pf/panda-coder-sql:dev
+    imagePullPolicy: Always
+    args: "--sort_buffer_size=2M"
+    volumeName: mysql-persistent-storage
+
+elasticSearch:
+  esname: elasticsearch-blog
+  serviceName: service-elasticsearch
+  container:
+    name: panda-coder-elastic-search
+    image: andrey1pf/panda-coder-es:dev
+    imagePullPolicy: Always
+
+parsing:
+  parsname: parsing-blog
+  container:
+    name: panda-coder-parsing
+    image: andrey1pf/panda-coder-parsing:dev
+    imagePullPolicy: Always
+
+ports:
+  pythonPort: 5000
+  mysqlPort: 3306
+  elasticSearchPort: 9200
+  port: 80

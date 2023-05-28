@@ -5,15 +5,16 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends gcc \
     && apt-get install -y --no-install-recommends python3-dev \
     && apt-get install -y --no-install-recommends default-libmysqlclient-dev \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* 
 
 WORKDIR /app
 
 COPY ../blog/requirements.txt .
 RUN pip install -r requirements.txt
+RUN pip install cryptography
 
 COPY ../blog .
 
 EXPOSE 5000
 
-CMD ["python", "app.py"]
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]

@@ -1,10 +1,10 @@
 FROM docker.elastic.co/elasticsearch/elasticsearch:8.3.3
 
-COPY elasticsearch.yml /usr/share/elasticsearch/config/elasticsearch.yml
-COPY log4j2.properties /usr/share/elasticsearch/config/log4j2.properties
-
-USER elasticsearch
+ENV xpack.security.enabled=false
+ENV discovery.type=single-node
+ENV JVM_OPTS="-Xms256m -Xmx256m"
+ENV bootstrap.memory_lock=true
 
 EXPOSE 9200 9300
 
-CMD ["/usr/share/elasticsearch/bin/elasticsearch"]
+CMD ["elasticsearch"]

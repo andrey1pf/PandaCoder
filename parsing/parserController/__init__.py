@@ -13,4 +13,6 @@ app.config.update(
 )
 
 from parserController.Parsers import parser_newsdataio
-from parserController import add_image
+from parserController import add_image, start
+
+start.start()

@@ -2,9 +2,12 @@ from elasticsearch import Elasticsearch
 
 from blogController.models import Article
 from elasticsearch.helpers import bulk
+import os
+
+elastic_host = os.environ.get('ELASTIC_HOST')
 
 es = Elasticsearch(
-    hosts=[{'host': 'localhost', 'scheme': 'http', 'port': 9200}],
+    hosts=[{'host': elastic_host, 'scheme': 'http', 'port': 9200}],
     timeout=30,
 )
 
@@ -64,9 +67,9 @@ def search_article(query_article):
         body={
             "query": {
                 "match": {
-                    "title": {
+                    "text": {
                         "query": query_article,
-                        "fuzziness": "2"  # Здесь указываем максимальное расстояние Левенштейна (по умолчанию 2)
+                        "fuzziness": "2"
                     }
                 }
             },
@@ -76,5 +79,3 @@ def search_article(query_article):
     hits = resp["hits"]["hits"]
     for hit in hits:
         return hit["_id"]
-
-# docker run --rm -p 9200:9200 -p 9300:9300 -e "xpack.security.enabled=false" -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:8.3.3

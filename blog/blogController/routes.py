@@ -10,7 +10,7 @@ from urllib.parse import urlparse, urljoin
 
 from blogController import app, db
 from blogController.models import Article, User
-from blogController import add_image#, search_article
+from blogController import add_image, search_article
 import io
 import threading
 import time
@@ -160,23 +160,23 @@ def logout():
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
-    return 0
-    # if request.method == 'GET':
-    #     article = Article.query.order_by(Article.id.desc()).first()
-    #     blob_reader = io.BytesIO(article.ImageID)
-    #     base64_content = base64.b64encode(blob_reader.read()).decode('utf-8')
-    #     img_src = f"data:image/jpeg;base64,{base64_content}"
-    #     return render_template("search_article.html", article=article, image_data=img_src)
-    #
-    # if request.method == 'POST':
-    #     query = request.form['find_article']
-    #     id_article = search_article.search_article(query)
-    #     article = Article.query.get(id_article)
-    #     blob_reader = io.BytesIO(article.ImageID)
-    #     base64_content = base64.b64encode(blob_reader.read()).decode('utf-8')
-    #     img_src = f"data:image/jpeg;base64,{base64_content}"
-    #
-    #     return render_template("search_article.html", article=article, image_data=img_src)
+    if request.method == 'GET':
+        article = Article.query.order_by(Article.id.desc()).first()
+        blob_reader = io.BytesIO(article.ImageID)
+        base64_content = base64.b64encode(blob_reader.read()).decode('utf-8')
+        img_src = f"data:image/jpeg;base64,{base64_content}"
+        return render_template("search_article.html", article=article, image_data=img_src)
+
+    if request.method == 'POST':
+        query = request.form['find_article']
+        id_article = search_article.search_article(query)
+        if id_article != null:
+            article = Article.query.get(id_article)
+            blob_reader = io.BytesIO(article.ImageID)
+            base64_content = base64.b64encode(blob_reader.read()).decode('utf-8')
+            img_src = f"data:image/jpeg;base64,{base64_content}"
+
+            return render_template("search_article.html", article=article, image_data=img_src)
 
 
 @app.after_request
