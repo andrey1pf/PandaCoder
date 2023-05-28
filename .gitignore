@@ -10,3 +10,41 @@
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+# Игнорирование файла key.json
+key.json
+
+# Игнорирование файла cluster-keys.json
+cluster-keys.json
+
+# Игнорирование файлов состояния Terraform
+*.tfstate
+*.tfstate.*
+*.tfvars
+
+# Игнорирование файлов резервного копирования Terraform
+*.backup
+
+# Игнорирование файлов автогенерации Terraform
+.terraform/
+
+# Игнорирование временных файлов
+*.tfplan
+
+# Игнорирование файлов кэша
+terraform.tfstate.backup
+
+# Игнорирование сгенерированных файлов Helm
+*.tar.gz
+*.tgz
+*.helmignore
+charts/
+*.prov
+*.lock
+
+# Игнорирование каталога, содержащего установленные пакеты Helm
+/.helm
+
+# Игнорирование файлов секретов
+secrets.yaml
+secrets.yaml.gotmpl
